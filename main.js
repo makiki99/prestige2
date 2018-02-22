@@ -70,8 +70,8 @@ function activatePrestige(x,y) {
 		}
 		data.prestiges[x][y]++;
 		updateDescriptions();
-		draw();
 	}
+	draw();
 }
 
 function update() {
@@ -85,7 +85,7 @@ function draw() {
 	for (let i = 0; i < 10; i++) {
 		for (let j = 0; j < 10; j++) {
 			let btn = document.getElementById("tier"+i+j);
-			btn.innerHTML = "Tier("+i+","+j+")\nx0"
+			btn.innerHTML = "Tier("+i+","+j+")\nx"+data.prestiges[i][j];
 		}
 	}
 }

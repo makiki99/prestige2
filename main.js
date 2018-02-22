@@ -39,7 +39,7 @@ function getGain() {
 
 function getRequirement(x,y) {
 	if (x===0 && y===0) {
-		return Math.floor(Math.pow(1.5,data.prestiges[0])*10);
+		return Math.floor(Math.pow(1.5,data.prestiges[0][0])*10);
 	} else {
 		return (x+y+2)*(data.prestiges[x][y]+1);
 	}
@@ -47,7 +47,7 @@ function getRequirement(x,y) {
 
 function canActivatePrestige(x,y) {
 	if (x===0 && y===0) {
-		return (data.coins >= getRequirement(0));
+		return (data.coins >= getRequirement(x,y));
 	} else if (x===0) {
 		return (data.prestiges[0][y-1] >= getRequirement(x,y));
 	} else if (y===0) {
@@ -57,15 +57,21 @@ function canActivatePrestige(x,y) {
 	}
 }
 
-function activatePrestige(id) {
-	if (canActivatePrestige(id)) {
-			data.coins = 0;
-			for (let i = 0; i < id; i++) {
-				data.prestiges[i] = 0;
+function activatePrestige(x,y) {
+	console.log(x,y);
+	if (canActivatePrestige(x,y)) {
+		data.coins = 0;
+		for (let i = 0; i <= x; i++) {
+			for (var j = 0; j <= y; j++) {
+				if (!(i === x && j === y)) {
+					data.prestiges[i][j] = 0;
+				}
 			}
-			data.prestiges[id]++;
+		}
+		data.prestiges[x][y]++;
+		updateDescriptions();
+		draw();
 	}
-	draw();
 }
 
 function update() {
@@ -90,7 +96,7 @@ function updateDescriptions() {
 		for (var x = 0; x < 10; x++) {
 			a[x] = [];
 			for (var y = 0; y < 10; y++) {
-				a[x][y] = "Tier("+i+","+j+"): "+names[i]+names[j]+"prestige\nPrestige requirements:";
+				a[x][y] = "Tier("+x+","+y+"): "+names[i]+names[j]+"prestige\nPrestige requirements:";
 				if (x===0 && y===0) {
 					a[x][y] += "\n" + getRequirement(x,y) + " coins";
 				}
@@ -107,9 +113,9 @@ function updateDescriptions() {
 }
 
 window.addEventListener("load",function () {
-	// if (localStorage.QUADRATIC_SHITPOST) {
-	// 	data = JSON.parse(localStorage.QUADRATIC_SHITPOST)
-	// }
+	if (localStorage.QUADRATIC_SHITPOST) {
+		data = JSON.parse(localStorage.QUADRATIC_SHITPOST)
+	}
 	let table = document.getElementById("buyables");
 	for (let i = 0; i < 10; i++) {
 		let tr = document.createElement("tr");
@@ -117,6 +123,7 @@ window.addEventListener("load",function () {
 			let td = document.createElement("td");
 			let btn = document.createElement("button");
 			btn.id = "tier"+i+j;
+			btn.addEventListener("click", ((x,y)=>{return (()=>{activatePrestige(x,y);})})(i,j));
 			td.appendChild(btn);
 			tr.appendChild(td);
 		}

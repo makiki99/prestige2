@@ -1,10 +1,10 @@
-var data = {
+let data = {
 	coins: 0,
 	prestiges: (()=>{
 		let a=[];
-		for (var x = 0; x < 10; x++) {
+		for (let x = 0; x < 10; x++) {
 			a[x] = [];
-			for (var y = 0; y < 10; y++) {
+			for (let y = 0; y < 10; y++) {
 				a[x][y] = 0;
 			}
 		}
@@ -12,34 +12,55 @@ var data = {
 	})()
 };
 
+let names = [
+	"nano",
+	"micro",
+	"mini",
+	"small",
+	"partial",
+	"full",
+	"multi",
+	"hyper",
+	"ultra",
+	"final"
+];
+
+let descriptions;
+
 function getGain() {
-	var gain = 1;
-	data.prestiges.forEach(function (el) {
-		gain *= 1+el;
-	})
+	let gain = 1;
+	for (let x = 0; x < 10; x++) {
+		for (let y = 0; y < 10; y++) {
+			gain *= data.prestiges[x][y]+1;
+		}
+	}
 	return gain;
 }
 
-function getRequirement(id) {
-	if (id === 0) {
-		return Math.floor((((10)+(10+Math.pow(data.prestiges[0],1.05)))/2)*(data.prestiges[0]+1));
+function getRequirement(x,y) {
+	if (x===0 && y===0) {
+		return Math.floor(Math.pow(1.5,data.prestiges[0])*10);
 	} else {
-		return (id+1)*(data.prestiges[id]+1)
+		return (x+y+2)*(data.prestiges[x][y]+1);
 	}
 }
 
-function canActivatePrestige(id) {
-	if (id===0) {
+function canActivatePrestige(x,y) {
+	if (x===0 && y===0) {
 		return (data.coins >= getRequirement(0));
+	} else if (x===0) {
+		return (data.prestiges[0][y-1] >= getRequirement(x,y));
+	} else if (y===0) {
+		return (data.prestiges[x-1][0] >= getRequirement(x,y));
 	} else {
-		return (data.prestiges[id-1] >= getRequirement(id));
+		return (data.prestiges[x-1][y] >= getRequirement(x,y)) && (data.prestiges[x][y-1] >= getRequirement(x,y));
 	}
 }
 
 function activatePrestige(id) {
 	if (canActivatePrestige(id)) {
 			data.coins = 0;
-			for (var i = 0; i < id; i++) {
+			for (let i = 0; i < id; i++) {
 				data.prestiges[i] = 0;
 			}
 			data.prestiges[id]++;
@@ -55,12 +76,34 @@ function update() {
 function draw() {
 	document.getElementById("coins").innerHTML = data.coins;
 	document.getElementById("gain").innerHTML = getGain();
-	for (var i = 0; i < 10; i++) {
-		for (var j = 0; j < 10; j++) {
+	for (let i = 0; i < 10; i++) {
+		for (let j = 0; j < 10; j++) {
 			let btn = document.getElementById("tier"+i+j);
 			btn.innerHTML = "Tier("+i+","+j+")\nx0"
 		}
 	}
+}
+
+function updateDescriptions() {
+	descriptions = (()=>{
+		let a=[];
+		for (var x = 0; x < 10; x++) {
+			a[x] = [];
+			for (var y = 0; y < 10; y++) {
+				a[x][y] = "Tier("+i+","+j+"): "+names[i]+names[j]+"prestige\nPrestige requirements:";
+				if (x===0 && y===0) {
+					a[x][y] += "\n" + getRequirement(x,y) + " coins";
+				}
+				if (x!==0) {
+					a[x][y] += "\n" + getRequirement(x,y) +" of tier("+(x-1)+","+y+")";
+				}
+				if (y!==0) {
+					a[x][y] += "\n" + getRequirement(x,y) +" of tier("+x+","+(y-1)+")";
+				}
+			}
+		}
+		return a;
+	})()
 }
 
 window.addEventListener("load",function () {
@@ -68,9 +111,9 @@ window.addEventListener("load",function () {
 	// 	data = JSON.parse(localStorage.QUADRATIC_SHITPOST)
 	// }
 	let table = document.getElementById("buyables");
-	for (var i = 0; i < 10; i++) {
+	for (let i = 0; i < 10; i++) {
 		let tr = document.createElement("tr");
-		for (var j = 0; j < 10; j++) {
+		for (let j = 0; j < 10; j++) {
 			let td = document.createElement("td");
 			let btn = document.createElement("button");
 			btn.id = "tier"+i+j;

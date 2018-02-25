@@ -41,7 +41,7 @@ function getRequirement(x,y) {
 	if (x===0 && y===0) {
 		return Math.floor(Math.pow(1.5,data.prestiges[0][0])*10);
 	} else {
-		return (x+y+2)*(data.prestiges[x][y]+1);
+		return Math.pow((x+y+1),(data.prestiges[x][y]+1));
 	}
 }
 
@@ -96,15 +96,15 @@ function updateDescriptions() {
 		for (var x = 0; x < 10; x++) {
 			a[x] = [];
 			for (var y = 0; y < 10; y++) {
-				a[x][y] = "Tier("+x+","+y+"): "+names[i]+names[j]+"prestige\nPrestige requirements:";
+				a[x][y] = "Tier("+x+","+y+"): "+names[x]+names[y]+"prestige\r\nPrestige requirements:";
 				if (x===0 && y===0) {
-					a[x][y] += "\n" + getRequirement(x,y) + " coins";
+					a[x][y] += "\r\n" + getRequirement(x,y) + " coins";
 				}
 				if (x!==0) {
-					a[x][y] += "\n" + getRequirement(x,y) +" of tier("+(x-1)+","+y+")";
+					a[x][y] += "\r\n" + getRequirement(x,y) +" of tier("+(x-1)+","+y+")";
 				}
 				if (y!==0) {
-					a[x][y] += "\n" + getRequirement(x,y) +" of tier("+x+","+(y-1)+")";
+					a[x][y] += "\r\n" + getRequirement(x,y) +" of tier("+x+","+(y-1)+")";
 				}
 			}
 		}
@@ -117,13 +117,24 @@ window.addEventListener("load",function () {
 		data = JSON.parse(localStorage.QUADRATIC_SHITPOST)
 	}
 	let table = document.getElementById("buyables");
+	updateDescriptions();
 	for (let i = 0; i < 10; i++) {
 		let tr = document.createElement("tr");
 		for (let j = 0; j < 10; j++) {
 			let td = document.createElement("td");
 			let btn = document.createElement("button");
 			btn.id = "tier"+i+j;
-			btn.addEventListener("click", ((x,y)=>{return (()=>{activatePrestige(x,y);})})(i,j));
+			btn.addEventListener("click", ((x,y)=>{return (()=>{
+				activatePrestige(x,y);
+				document.getElementById("tooltip").innerText = descriptions[x][y];
+			})})(i,j));
+			btn.addEventListener("mouseover", (e)=>{
+				document.getElementById("tooltip").style.display = "block";
+				document.getElementById("tooltip").style.top = (e.currentTarget.getBoundingClientRect().top+50)+"px";
+				document.getElementById("tooltip").style.left = (e.currentTarget.getBoundingClientRect().left+20)+"px";
+				document.getElementById("tooltip").innerText = descriptions[parseInt(e.currentTarget.id[4])][parseInt(e.currentTarget.id[5])];
+			});
+			btn.addEventListener("mouseout", (e)=>{document.getElementById("tooltip").style.display = "none"});
 			td.appendChild(btn);
 			tr.appendChild(td);
 		}

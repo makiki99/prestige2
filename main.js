@@ -129,10 +129,21 @@ window.addEventListener("load",function () {
 				document.getElementById("tooltip").innerText = descriptions[x][y];
 			})})(i,j));
 			btn.addEventListener("mouseover", (e)=>{
-				document.getElementById("tooltip").style.display = "block";
-				document.getElementById("tooltip").style.top = (e.currentTarget.getBoundingClientRect().top+50)+"px";
-				document.getElementById("tooltip").style.left = (e.currentTarget.getBoundingClientRect().left+20)+"px";
-				document.getElementById("tooltip").innerText = descriptions[parseInt(e.currentTarget.id[4])][parseInt(e.currentTarget.id[5])];
+				let tooltip = document.getElementById("tooltip");
+				tooltip.style.display = "block";
+				tooltip.style.top = (e.currentTarget.getBoundingClientRect().top+50)+"px";
+				tooltip.style.left = (e.currentTarget.getBoundingClientRect().left+20)+"px";
+				tooltip.style.bottom = "";
+				tooltip.style.right = "";
+				tooltip.innerText = descriptions[parseInt(e.currentTarget.id[4])][parseInt(e.currentTarget.id[5])];
+				if (tooltip.getBoundingClientRect().bottom > window.innerHeight) {
+					tooltip.style.top = "";
+					tooltip.style.bottom = (e.currentTarget.getBoundingClientRect().bottom-50)+"px";
+				}
+				if (tooltip.getBoundingClientRect().right > window.innerWidth) {
+					tooltip.style.left = "";
+					tooltip.style.right = (e.currentTarget.getBoundingClientRect().right-50)+"px";
+				}
 			});
 			btn.addEventListener("mouseout", (e)=>{document.getElementById("tooltip").style.display = "none"});
 			td.appendChild(btn);

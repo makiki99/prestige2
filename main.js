@@ -138,11 +138,11 @@ window.addEventListener("load",function () {
 				tooltip.innerText = descriptions[parseInt(e.currentTarget.id[4])][parseInt(e.currentTarget.id[5])];
 				if (tooltip.getBoundingClientRect().bottom > window.innerHeight) {
 					tooltip.style.top = "";
-					tooltip.style.bottom = (e.currentTarget.getBoundingClientRect().bottom-50)+"px";
+					tooltip.style.bottom = (window.innerHeight-(e.currentTarget.getBoundingClientRect().bottom-50))+"px";
 				}
 				if (tooltip.getBoundingClientRect().right > window.innerWidth) {
 					tooltip.style.left = "";
-					tooltip.style.right = (e.currentTarget.getBoundingClientRect().right-50)+"px";
+					tooltip.style.right = (window.innerWidth-(e.currentTarget.getBoundingClientRect().right-50))+"px";
 				}
 			});
 			btn.addEventListener("mouseout", (e)=>{document.getElementById("tooltip").style.display = "none"});

@@ -12,6 +12,8 @@ let data = {
 	})()
 };
 
+let metaBonus = 1;
+
 let names = [
 	"nano",
 	"micro",
@@ -34,7 +36,7 @@ function getGain() {
 			gain *= data.prestiges[x][y]+1;
 		}
 	}
-	return gain;
+	return gain*metaBonus;
 }
 
 function getRequirement(x,y) {
@@ -115,6 +117,9 @@ function updateDescriptions() {
 window.addEventListener("load",function () {
 	if (localStorage.QUADRATIC_SHITPOST) {
 		data = JSON.parse(localStorage.QUADRATIC_SHITPOST)
+	}
+	if (localStorage.META) {
+		metaBonus = JSON.parse(localStorage.META).multiForOthers;
 	}
 	let table = document.getElementById("buyables");
 	updateDescriptions();

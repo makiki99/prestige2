@@ -60,7 +60,7 @@ function canActivatePrestige(x,y) {
 }
 
 function activatePrestige(x,y) {
-	console.log(x,y);
+	//console.log(x,y);
 	if (canActivatePrestige(x,y)) {
 		data.coins = 0;
 		for (let i = 0; i <= x; i++) {
@@ -161,5 +161,5 @@ window.addEventListener("load",function () {
 		update();
 		draw();
 	}, 1000);
-	console.log("interval loaded")
+	//console.log("interval loaded")
 })

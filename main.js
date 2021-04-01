@@ -49,6 +49,18 @@ function resetCheck() {
     return false;
 }
 
+function getPPBonus() {
+    if (localStorage.PP) {
+        let temp = JSON.parse(localStorage.PP).prestiges;
+        var out = 1;
+        temp.forEach(function (el) {
+            out *= 1+el;
+        });
+        return out;
+    }
+    return 1;
+}
+
 function getGain() {
 	let gain = 1;
 	for (let x = 0; x < 10; x++) {
@@ -56,7 +68,7 @@ function getGain() {
 			gain *= data.prestiges[x][y]+1;
 		}
 	}
-	return gain*metaBonus;
+	return gain*metaBonus*getPPBonus();
 }
 
 function getRequirement(x,y) {

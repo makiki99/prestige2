@@ -29,6 +29,26 @@ let names = [
 
 let descriptions;
 
+function resetCheck() {
+    if (localStorage.RESET_2) {
+        data = {
+            coins: 0,
+            prestiges: (()=>{
+                let a=[];
+                for (let x = 0; x < 10; x++) {
+                    a[x] = [];
+                    for (let y = 0; y < 10; y++) {
+                        a[x][y] = 0;
+                    }
+                }
+                return a;
+            })()
+        };
+        localStorage.removeItem("RESET_2");
+    }
+    return false;
+}
+
 function getGain() {
 	let gain = 1;
 	for (let x = 0; x < 10; x++) {
@@ -78,6 +98,7 @@ function activatePrestige(x,y) {
 
 function update() {
 	data.coins += getGain();
+    resetCheck();
 	localStorage.QUADRATIC_SHITPOST = JSON.stringify(data);
 }
 
